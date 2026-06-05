@@ -1,85 +1,66 @@
 \relax 
 \citation{b1}
-\citation{b2}
 \citation{b8}
 \citation{b3}
 \citation{b4}
-\citation{b5,b6}
+\citation{b5}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\citation{b5}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Autonomous Search and Rescue Drone architectures}{1}{}\protected@file@percent }
 \citation{b6}
 \citation{b7}
-\citation{b5}
-\citation{b6}
-\citation{b7}
+\citation{b16}
 \citation{b11}
 \citation{b12}
 \citation{b13}
-\citation{b16}
-\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Autonomous Search and Rescue Drone}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Real-Time Human Detection for SAR}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Target Detection and Avoidance for UAVs}{2}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison with Existing SAR Drone Systems}}{2}{}\protected@file@percent }
-\newlabel{tab:comparison}{{I}{2}}
-\@writefile{toc}{\contentsline {section}{\numberline {III}Theoretical Background}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}YOLOv8 Architecture}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}MAVLink and MAVSDK}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}PX4 Autopilot and Offboard Mode}{2}{}\protected@file@percent }
-\citation{b9}
-\citation{b16}
-\citation{b10}
-\citation{b14}
-\citation{b18}
-\citation{b15}
-\citation{b12,b13}
-\@writefile{toc}{\contentsline {section}{\numberline {IV}System Design and Architecture}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Hardware Platform}{3}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Hardware Component Specifications}}{3}{}\protected@file@percent }
-\newlabel{tab:hardware}{{II}{3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overall system architecture depicting the multi-rate integration between flight subsystem (Pixhawk 6C/PX4), autonomous computation subsystem (Raspberry Pi 5), and real-time monitoring subsystem (React frontend via SocketIO).}}{3}{}\protected@file@percent }
-\newlabel{fig:system_arch}{{1}{3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Electrical Design}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}1}Initial Design and Failure Analysis}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}2}Final UBEC-Based Design}{3}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Parallel battery power distribution schematic. The LiPo 4S battery supplies both the PDB (propulsion) and UBEC 5A (companion computer) via an XT60 Y-Splitter.}}{3}{}\protected@file@percent }
-\newlabel{fig:electrical}{{2}{3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Mechanical Design}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Software Architecture}{3}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Mechanical Fastener Specifications}}{4}{}\protected@file@percent }
-\newlabel{tab:mech}{{III}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}1}Visual-to-Control Pipeline}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}2}Telemetry-to-Frontend Pipeline}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Autonomous Behavior Design}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-E}1}State Machine for Victim Search}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces State machine diagram for the autonomous scout mission, showing transitions between SCAN, APPROACH, DOCUMENT, and RETURN states with failsafe conditions.}}{4}{}\protected@file@percent }
-\newlabel{fig:state_machine}{{3}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-E}2}Target Validation and Lock}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-E}3}Failsafe Mechanisms}{4}{}\protected@file@percent }
-\citation{b17}
-\@writefile{toc}{\contentsline {section}{\numberline {V}System Implementation}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Hardware Integration}{5}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Fully assembled Holybro S500 drone with integrated 3D-printed compartments housing the Raspberry Pi 5, UBEC 5A, LiPo battery, and downward-facing camera mount.}}{5}{}\protected@file@percent }
-\newlabel{fig:drone_assembly}{{4}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Software Implementation}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Testing and Evaluation}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-A}}Power Supply Validation}{5}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces Power Supply Design Iterations}}{5}{}\protected@file@percent }
-\newlabel{tab:power_iter}{{IV}{5}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-B}}Operating System Optimization}{5}{}\protected@file@percent }
-\citation{b11}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-C}}Inference Resolution Benchmarking}{6}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces ONNX Inference Benchmark on Raspberry Pi 5}}{6}{}\protected@file@percent }
-\newlabel{tab:onnx_bench}{{V}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-D}}YOLOv8n Fine-Tuning Results}{6}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces YOLOv8n Fine-Tuning Configuration}}{6}{}\protected@file@percent }
-\newlabel{tab:training_config}{{VI}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Training and validation curves over 50 epochs showing stable convergence of box/cls/dfl losses and progressive improvement of precision, recall, mAP@50, and mAP@50-95 metrics.}}{6}{}\protected@file@percent }
-\newlabel{fig:training_curves}{{5}{6}}
-\@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Fine-Tuning Validation Metrics}}{6}{}\protected@file@percent }
-\newlabel{tab:metrics}{{VII}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-E}}Field Validation}{6}{}\protected@file@percent }
-\citation{b5}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Real-Time Human Detection and Navigation for SAR}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Target Detection, Tracking, and Avoidance System for UAVs}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}System Design and Architecture}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Theoretical Background of Autonomous Systems and Edge Computing}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Design of the Autonomous Operation Cycle (Scout Mission)}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overall System Architecture Topology. This illustrates the multi-rate interaction bridge between the autonomous flight subsystem block on the Pixhawk 6C (PX4 firmware), the high-level edge computing subsystem block on the Raspberry Pi 5 companion computer, and the TCP/UDP socket broadcasting to the web GCS operator interface subsystem for state machine reporting and comprehensive mission oversight.\relax }}{3}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:system_arch_full}{{1}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Hardware and Electrical Topology}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Mechanical Component Integration}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Distributed Multithreading Edge Software Architecture}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Architectural action graph schematic of the \textit  {Finite State Machine} (FSM) Scout Mission, detailing the autonomy transition directions along with the handling route for failed transitions (e.g., the \textit  {Target Lost Failback} feature when the transition towards approach fails because the subject exits the camera sensor boundaries).\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:state_machine_fsm}{{2}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Detailed Block Diagram Configuration of the Single Battery (Parallel) Electrical Load Distribution Architecture utilizing the UBEC 5A Extreme Voltage Step-Down Module.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:electrical_design}{{3}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Final prototype implementation highlighting the payload integration, processing unit, power management, and sensor placement on the Holybro S500 frame.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:drone_assembly_real}{{4}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Proportional Navigation Control Loop}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Implementation}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Three-Layer Failsafe Safety Architecture}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}GCS Operational Interface Software Layer}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Results}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}System Power Integrity and OS Optimization}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Detection Algorithm Architecture Evaluation}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}YOLOv8n Transfer Learning and Fine-Tuning}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Benchmarking of YOLOv8n ONNX Input Resolutions on Raspberry Pi 5\relax }}{6}{}\protected@file@percent }
+\newlabel{tab:model_comparison}{{I}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Training metrics progression for the YOLOv8n model over 50 epochs.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:training_loss_curves}{{5}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Evaluation Metrics for the Fine-Tuned YOLOv8n Model\relax }}{6}{}\protected@file@percent }
+\newlabel{tab:training_metrics_akhir}{{II}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Autonomous Flight Testing: FSM Scout Mission}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}In-Flight Visual Catch Distance Accuracy Test}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces In-flight operational log of the Finite State Machine transitions during the Scout Mission.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:fsm_in_flight}{{6}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Comparison of in-flight visual tracking capability at varying distances, illustrating the resolution limitations of the 320x320 input grid at extended ranges.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:in_flight_detection}{{7}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}End-to-End Latency and Navigation Accuracy}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces End-to-End Pipeline Latency Breakdown\relax }}{7}{}\protected@file@percent }
+\newlabel{tab:latency_breakdown}{{III}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Failsafe Safety and Persistent Scouting}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Trigger activation of the RTL battery defense system.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:battery_rtl}{{8}{7}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Visual proof of the Persistent Scouting scenario, demonstrating the drone's capability to continuously navigate and document multiple distinct targets within a single flight session without returning to launch.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:persistent_scouting_proof}{{9}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Web interface of the real-time operator monitoring dashboard receiving 5 Hz WebSockets along with low latency UDP video captures.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:dashboard_interface}{{10}{7}}
 \bibcite{b1}{1}
 \bibcite{b2}{2}
 \bibcite{b3}{3}
@@ -96,11 +77,6 @@
 \bibcite{b14}{14}
 \bibcite{b15}{15}
 \bibcite{b16}{16}
-\bibcite{b17}{17}
-\bibcite{b18}{18}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Real-time monitoring dashboard showing drone telemetry (battery, GPS, altitude), live camera feed with YOLOv8n bounding box overlay (person detected at 90\% confidence, 15.4 FPS), and storage gallery of documented scout mission photos.}}{7}{}\protected@file@percent }
-\newlabel{fig:dashboard}{{6}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VI-F}}Discussion}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion and Future Work}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{7}{}\protected@file@percent }
-\gdef \@abspage@last{7}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
+\gdef \@abspage@last{8}
