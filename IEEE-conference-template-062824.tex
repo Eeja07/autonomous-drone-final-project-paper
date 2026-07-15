@@ -38,11 +38,11 @@
 	\maketitle
 	
 	\begin{abstract}
-The rapid advancement of Unmanned Aerial Vehicle (UAV) or drone technology presents a significant opportunity to accelerate Search and Rescue (SAR) operations in remote and inaccessible disaster areas. This research aims to design and implement an autonomous drone system based on the Holybro S500 frame for real-time victim detection utilizing edge computing on a Raspberry Pi 5 equipped with a fixed monocular webcam. The system comprehensively integrates the Pixhawk 6C Flight Controller and flight control execution via the MAVLink protocol utilizing MAVSDK Python. Based on rigorous evaluation, a fine-tuned YOLOv8n object detection model exported to ONNX format (320x320 resolution) was selected over pose estimation models due to its superior resilience in maintaining bounding box stability under varying outdoor illumination. The system implements an asynchronous multi-threaded software architecture and an isolated power regulation system using a UBEC 5A to prevent voltage sag during peak computational loads. Real-world flight tests successfully validated the persistent navigation capability of the Scout Mission through the state machine cycle: SCAN $\rightarrow$ APPROACH $\rightarrow$ DOCUMENT $\rightarrow$ DISPLACING, achieving autonomous coverage expansion without requiring interim Return-to-Launch (RTL) maneuvers upon finding a target. Furthermore, a Three-Layer Safety System effectively mitigated critical low-altitude barometric drift anomalies. Ultimately, this system successfully synergized visual perception, autonomous decision-making, and real-time operator monitoring transmission, resulting in a robust and highly efficient prototype for SAR drone operations.
-	\end{abstract}
+The advancement of Unmanned Aerial Vehicle (UAV) technology presents significant opportunities to accelerate Search and Rescue (SAR) operations in hard-to-reach disaster areas. This research designs and implements an autonomous system on a Holybro S500 drone for real-time human detection based on edge computing using a Raspberry Pi 5 and a monocular camera. The platform integrates a Pixhawk 6C flight controller, executing flight commands via MAVLink through the MAVSDK-Python library. Based on empirical evaluations, a fine-tuned YOLOv8n model in ONNX format at $320 \times 320$ pixel resolution was selected for its consistency in maintaining target bounding boxes during outdoor flight testing compared to pose-estimation variants. System software is built upon an asynchronous multi-threading architecture, supported by a stable power distribution system utilizing a 5A UBEC regulator to prevent system sags. Flight testing demonstrated continuous Scout Mission navigation through a state machine cycle consisting of scanning, approach, documentation, and displacement phases without requiring mid-mission landings. Furthermore, a multi-layered safety system mitigates sensor anomalies caused by barometric altitude drift during low-altitude maneuvers. The resulting prototype integrates visual perception, autonomous decision-making, and real-time telemetry streaming to support victim search missions.
+\end{abstract}
 	
 	\begin{IEEEkeywords}
-		Autonomous Drone, Edge Computing, MAVSDK, Raspberry Pi 5, Search and Rescue, YOLOv8n
+		Autonomous Drone, Edge Computing, MAVSDK-Python, Raspberry Pi 5, Search and Rescue, YOLOv8n
 	\end{IEEEkeywords}
 	
 	\section{Introduction}
@@ -52,9 +52,9 @@ In Indonesia, which experiences high frequencies of natural disasters \cite{b3},
 
 Conventional drone SAR operations often rely on manual control and raw video transmission to a Ground Control Station (GCS). This introduces latency, stuttering, and signal loss in post-disaster environments with unstable networks. To address these limitations, this research proposes an edge computing approach to process visual data directly on board the aircraft.
 
-This study details the design of a fully autonomous drone integrating a Pixhawk 6C flight controller with a Raspberry Pi 5 companion computer. This enables local execution of the YOLOv8 object detection model without relying on GCS data links. The system navigates, detects humans, approaches, and documents targets autonomously.
+This study details the design of a fully autonomous drone integrating a Pixhawk 6C flight controller with a Raspberry Pi 5 companion computer. This enables local execution of the YOLOv8n object detection model without relying on GCS data links. The system navigates, detects humans, approaches, and documents targets autonomously.
 
-The primary objectives are to develop a stable hardware and power architecture, evaluate YOLOv8n ONNX inference performance on a headless OS, and construct a Persistent Multi-Target Scouting finite state machine (FSM) utilizing MAVSDK.
+The primary objectives are to develop a stable hardware and power architecture, evaluate YOLOv8n ONNX inference performance on a headless OS, and construct a Persistent Multi-Target Scouting finite state machine (FSM) utilizing MAVSDK-Python.
 
 The scope is limited to a single Holybro S500 UAV. Edge computing relies on a single Raspberry Pi 5 (8GB) running a headless Linux OS to conserve resources. Local video recording is disabled to prevent I/O bottlenecks. Detection relies on a static monocular RGB camera identifying only the human class. Target duplicate exclusion is managed using GPS-based Haversine distance calculations.
 
@@ -68,42 +68,42 @@ Elashaal et al. (2024) \cite{b5} developed an autonomous SAR drone using the Hol
 Jayalath and Munasinghe (2021) \cite{b6} integrated a TensorFlow Fast R-CNN detector with autonomous navigation on a Raspberry Pi 4 using the OkutamaAction dataset. The drone calculated GPS coordinates of victims based on geometric projection. Although achieving an 84.1\% accuracy, inference latency reached 8 seconds per frame. Such severe delays are entirely insufficient for dynamic real-world SAR missions requiring control feedback frequencies above 10 Hz. The detector was also highly vulnerable to varying sunlight conditions, often losing track of subjects when transitioning between shadows and direct sunlight.
 
 \subsection{Target Detection, Tracking, and Avoidance System for UAVs}
-Varatharasan et al. (2019) \cite{b7} optimized a low-cost hardware setup using a Raspberry Pi 3B+ and an Intel Movidius Neural Compute Stick 2 (NCS2). They utilized the MAVSDK API for Offboard autonomous control, achieving system stability on low-power devices. However, the system required an external dedicated compute stick which adds mechanical payload weight and complexity to the electrical harness. Their depth estimation relied strictly on stadiametric rangefinding (estimating distance based on bounding box height), which is inherently prone to critical errors during sudden aircraft pitch or roll drifts where the geometric perspective is temporarily skewed.
+Varatharasan et al. (2019) \cite{b7} optimized a low-cost hardware setup using a Raspberry Pi 3B+ and an Intel Movidius Neural Compute Stick 2 (NCS2). They utilized the MAVSDK API for OFFBOARD autonomous control, achieving system stability on low-power devices. However, the system required an external dedicated compute stick which adds mechanical payload weight and complexity to the electrical harness. Their depth estimation relied strictly on stadiametric rangefinding (estimating distance based on bounding box height), which is inherently prone to critical errors during sudden aircraft pitch or roll drifts where the geometric perspective is temporarily skewed.
 
 \section{System Design and Architecture}
-The methodology employed in this research relies heavily on a multi-critical Engineering Design Process framework holistically combined with Systems Engineering principles. The macro stages of this development encompass System Architecture Design, Drone Control Finite State Machine Behavior Design, Computational Electrical Planning and Design, Software Processing Pipeline Integration, and Autonomous Flight Safety Failsafe Maturation.
+The system architecture was developed using an Engineering Design Process integrated with Systems Engineering principles. The design encompasses software processing pipelines, finite state machine navigation logic, computational power topology, and autonomous flight safety failsafes.
 
 \subsection{Theoretical Background of Autonomous Systems and Edge Computing}
-In UAV operations, edge computing shifts cognitive processing to the sensor source, eliminating bandwidth constraints and reducing decision-making latency \cite{b16}. This study utilizes YOLOv8n, a single-stage, anchor-free object detector, for its low latency on edge devices \cite{b11}. The YOLOv8 architecture replaces the traditional C3 modules with C2f (Cross Stage Partial Bottleneck with two convolutions) blocks. This topological shift significantly improves gradient flow and feature representation capabilities while maintaining a lightweight parameter count suitable for embedded Linux environments. Its structure is fundamentally divided into three primary segments: the CSPDarknet53 backbone for high-resolution feature extraction, the PANet (Path Aggregation Network) neck for multi-scale feature fusion across varying target distances, and a decoupled head that separates objectness, classification, and bounding box regression tasks. This decoupled nature is highly beneficial for accelerating the calculation of intersection over union (IoU) losses during training.
+In UAV operations, edge computing shifts cognitive processing to the sensor source, eliminating bandwidth constraints and reducing decision-making latency \cite{b16}. This study utilizes YOLOv8n, a single-stage, anchor-free object detector, for its low latency on edge devices \cite{b11}. The YOLOv8 architecture replaces traditional C3 modules with C2f (Cross Stage Partial Bottleneck with two convolutions) blocks. This topological shift improves gradient flow and feature representation while maintaining a lightweight parameter count suitable for embedded Linux environments. Its structure comprises three primary segments: the CSPDarknet53 backbone for high-resolution feature extraction, the PANet (Path Aggregation Network) neck for multi-scale feature fusion across varying target distances, and a decoupled head that separates classification and bounding box regression tasks. Decoupling classification and regression accelerates Intersection over Union (IoU) loss convergence during training.
 
 The pretrained YOLOv8n model was fine-tuned using the COCO2017 dataset, specifically filtered for the \textit{person} class to minimize inference overhead. To optimize execution performance, the PyTorch model was exported to the ONNX (Open Neural Network Exchange) format at a 320x320 input resolution. This quantization and serialization process maximizes parallel instruction efficiency on the Raspberry Pi 5's ARM Cortex-A76 cores, drastically reducing the thermal envelope compared to standard PyTorch inference. 
 
-Communication between the companion computer and the Pixhawk 6C flight controller is handled via MAVLink, using MAVSDK Python to translate logic scripts into asynchronous dynamic vector movement commands \cite{b12}\cite{b13}. The MAVLink protocol guarantees fault-tolerant serial transmission at a baud rate of 921600. It continuously transfers critical \texttt{HEARTBEAT} signals, \texttt{LOCAL\_POSITION\_NED} telemetry for Cartesian positioning, and \texttt{SET\_POSITION\_TARGET\_LOCAL\_NED} messages to dictate the drone's aerodynamic behavior. The overall system architecture is detailed in Figure \ref{fig:system_arch_full}.
+Communication between the companion computer and the Pixhawk 6C flight controller is handled via MAVLink, using MAVSDK-Python to translate logic scripts into asynchronous dynamic vector movement commands \cite{b12, b13}. The MAVLink protocol provides fault-tolerant serial transmission at a baud rate of 921600. It continuously transfers critical \texttt{HEARTBEAT} signals, \texttt{LOCAL\_POSITION\_NED} telemetry for Cartesian positioning, and \texttt{SET\_POSITION\_TARGET\_LOCAL\_NED} messages to dictate the drone's aerodynamic behavior. The overall system architecture is detailed in Figure \ref{fig:system_arch_full}.
 
 \begin{figure*}[ht]
     \centering
-    \includegraphics[width=0.85\linewidth]{fig_system_arch.pdf}
-    \caption{Overall System Architecture Topology. This illustrates the multi-rate interaction bridge between the autonomous flight subsystem block on the Pixhawk 6C (PX4 firmware), the high-level edge computing subsystem block on the Raspberry Pi 5 companion computer, and the TCP/UDP socket broadcasting to the web GCS operator interface subsystem for state machine reporting and comprehensive mission oversight.}
+    \includegraphics[width=0.85\linewidth]{figures/fig_system_arch.pdf}
+    \caption{Overall System Architecture Topology showing interactions between the Pixhawk 6C (PX4 firmware), Raspberry Pi 5 companion computer, and Ground Control Station (GCS) operator interface.}
     \label{fig:system_arch_full}
 \end{figure*}
 
 \subsection{Design of the Autonomous Operation Cycle (Scout Mission)}
 The system's autonomous behavior is governed by a Finite State Machine (FSM) termed the \textit{Scout Mission}. This architecture allows dynamic transitions based on environmental variables and computer vision outputs. The Scout Mission consists of four primary states (Figure \ref{fig:state_machine_fsm}):
 \begin{itemize}
-    \item SCAN State: The drone maintains a static hover while executing a slow yaw rotation at 20 degrees per second. This maximizes the camera's observation area while the YOLO unit continuously searches for human subjects.
-    \item APPROACH State: Upon detecting a target exceeding the confidence threshold, the drone initiates a forward approach. The velocity vector is dynamically adjusted based on the proportional difference between the target's bounding box center and the camera's actual centerpoint.
-    \item DOCUMENT State: When the bounding box fill ratio reaches an optimal threshold and the alignment error is within safe margins, the system records GPS coordinates and saves a full-resolution image.
+    \item SCAN State: The drone maintains a static hover while executing a slow yaw rotation at 20 degrees per second. To transition to the APPROACH state and eliminate visual clutter or transient noise, the detector must yield valid target detections across 3 consecutive frames (\texttt{SCOUT\_APPROACH\_CONFIRM\_FRAMES = 3}).
+    \item APPROACH State: Upon locking onto a confirmed target, the drone initiates a forward approach using proportional error velocity setpoints. To trigger the DOCUMENT phase, the target must remain horizontally centered and within proximity criteria for 5 consecutive frames (\texttt{SCOUT\_DOCUMENT\_CONFIRM\_FRAMES = 5}) to ensure dynamic drone oscillations have fully settled. Furthermore, a safety timeout aborts pursuit and falls back to SCAN if target vision is lost for $>2.0$ s or if the approach duration exceeds $20.0$ s.
+    \item DOCUMENT State: When documentation criteria are satisfied, the system records GPS coordinates and saves a full-resolution image.
     \item DISPLACING State: Instead of executing a mandatory Return-to-Launch (RTL), the drone performs a 2-meter lateral step displacement to exit the immediate discovery area and re-enters the SCAN state for continued observation.
 \end{itemize}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.9\linewidth]{fig_state_machine.pdf}
-    \caption{Architectural action graph schematic of the \textit{Finite State Machine} (FSM) Scout Mission, detailing the autonomy transition directions along with the handling route for failed transitions (e.g., the \textit{Target Lost Failback} feature when the transition towards approach fails because the subject exits the camera sensor boundaries).}
+    \includegraphics[width=0.9\linewidth]{figures/fig_state_machine.pdf}
+    \caption{State Machine Diagram of the autonomous Scout Mission system, showing state transitions (SCAN, APPROACH, DOCUMENT, DISPLACING) and Target Lost Failback logic.}
     \label{fig:state_machine_fsm}
 \end{figure}
 
-This architecture enables Persistent Multi-Target Scouting, allowing the drone to search continuously until critical battery levels trigger RTL. To prevent duplicate documentation of the same target, a Duplicate Exclusion Memory algorithm is implemented using the Haversine distance formula:
+This architecture enables Persistent Multi-Target Scouting, allowing the drone to search continuously until critical battery levels trigger RTL. To prevent duplicate documentation of the same target, a Duplicate Exclusion Memory algorithm is implemented using the Haversine geodesic distance formula:
 \begin{equation}
 a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos\phi_1 \cdot \cos\phi_2 \cdot \sin^2\left(\frac{\Delta\lambda}{2}\right)
 \end{equation}
@@ -113,17 +113,17 @@ c = 2 \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)
 \begin{equation}
 d = R \cdot c
 \end{equation}
-where $R$ is the Earth's radius (6,371,000 m). The exclusion radius is set to 3 meters. Any new detection within this 3-meter boundary of a previously recorded target is ignored, prompting the drone to continue its search.
+where $\phi_1$, $\phi_2$ are the latitudes of the two GPS points, $\Delta\phi = \phi_2 - \phi_1$ and $\Delta\lambda = \lambda_2 - \lambda_1$ are the latitude and longitude differences, $a$ is the spherical haversine value, $c$ is the angular distance in radians, $d$ is the geodesic surface distance in meters, and $R = 6,371,000$ m is Earth's mean radius. An absolute geospatial exclusion radius is enforced at 3.0 meters ($d \leq 3.0$ m). Detections falling within this radius of previously documented targets are bypassed, allowing persistent area coverage.
 
 \subsection{Hardware and Electrical Topology}
 The power system distributes energy from a single Tattu 4S Lithium Polymer (LiPo) battery (14.8V DC). Energy flows through a Holybro Power Module and Power Distribution Board (PDB) to the Electronic Speed Controllers (ESC) powering the propulsion motors.
 
-For the Raspberry Pi 5, which demands high peak currents (up to 5A), standard power delivery methods such as GPIO-connected Mini UPS or basic step-down converters (e.g., XL4015E1) proved inadequate, leading to voltage sag, PMIC damage, or under-voltage throttling. The final robust design utilizes a 5A Universal Battery Elimination Circuit (UBEC). The UBEC connects in parallel to the main LiPo battery via an XT60 Y-splitter, providing a stable 5.1V DC supply via USB-C. This topology (Figure \ref{fig:electrical_design}) ensures reliable power delivery, preventing voltage drops during computationally intensive inference tasks and flight maneuvers.
+For the Raspberry Pi 5, which demands high peak currents (up to 5A), standard power delivery methods such as GPIO-connected Mini UPS or basic step-down converters (e.g., XL4015E1) proved inadequate, leading to voltage sag, PMIC (Power Management Integrated Circuit) damage, or under-voltage throttling. The final robust design utilizes a 5A Universal Battery Elimination Circuit (UBEC). The UBEC connects in parallel to the main LiPo battery via an XT60 Y-splitter, providing a stable 5.1V DC supply via USB-C. This topology (Figure \ref{fig:electrical_design}) ensures reliable power delivery, preventing voltage drops during computationally intensive inference tasks and flight maneuvers.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.95\linewidth]{fig_electrical.pdf}
-    \caption{Detailed Block Diagram Configuration of the Single Battery (Parallel) Electrical Load Distribution Architecture utilizing the UBEC 5A Extreme Voltage Step-Down Module.}
+    \includegraphics[width=0.95\linewidth]{figures/fig_electrical.pdf}
+    \caption{Block diagram of the single battery (parallel) electrical load distribution architecture utilizing a 5A UBEC step-down module.}
     \label{fig:electrical_design}
 \end{figure}
 
@@ -132,65 +132,95 @@ The mechanical design emphasizes optimal Center of Gravity (CG) placement. Custo
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[b]{0.48\linewidth}
-        \includegraphics[width=\textwidth]{fig_drone_assembly_new.png}
-        \caption{Full Assembly}
+    \begin{subfigure}[b]{0.57\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig_cad_assembly_bab3.png}
+        \caption{Final CAD assembly}
+        \label{fig:cad_assembly}
     \end{subfigure}
-    \caption{Final prototype implementation highlighting the payload integration, processing unit, power management, and sensor placement on the Holybro S500 frame.}
+    \hfill
+    \begin{subfigure}[b]{0.39\linewidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig_real_prototype_bab3.png}
+        \caption{Realized prototype}
+        \label{fig:real_prototype}
+    \end{subfigure}
+    \caption{Final UAV mechanical design and realized prototype.}
     \label{fig:drone_assembly_real}
 \end{figure}
 
 \subsection{Distributed Multithreading Edge Software Architecture}
-The software architecture utilizes multi-threading to ensure that resource-intensive AI operations do not block the critical flight control loops. The Python \texttt{threading} module is employed to partition these tasks across the Raspberry Pi 5's quad-core CPU, allowing asynchronous execution without severe global interpreter lock (GIL) bottlenecks on the heavier I/O operations:
+The software architecture utilizes multi-threading to ensure that resource-intensive AI operations do not block the critical flight control loops. The Python \texttt{threading} module is employed to partition these tasks across the Raspberry Pi 5's quad-core CPU, decoupling asynchronous I/O and computer vision processing:
 \begin{itemize}
-    \item Main Execution Thread: Manages the Flask REST and SocketIO server for two-way WebSocket communication with the ground station. It handles the continuous transmission of JSON-formatted telemetry payloads (e.g., battery voltage, GPS coordinates, flight mode) to the operator interface at a locked 5 Hz rate.
-    \item MAVSDK Telemetry Listener Thread: Operates asynchronously to manage flight telemetry and drive the FSM cycle. It continuously polls the Pixhawk 6C for high-frequency attitude and position updates via MAVLink. This thread evaluates the current FSM state (SCAN, APPROACH, DOCUMENT, DISPLACING) and dictates the necessary aerodynamic setpoints at a strict 20 Hz loop to ensure smooth, non-oscillating flight maneuvers.
-    \item GStreamer Video Source Producer Thread: Handles high-speed hardware-accelerated frame capture from the USB interface. It implements a tee-branch pipeline utilizing the \texttt{v4l2src} plugin to distribute frames simultaneously: one branch pushes raw RGB frames into a thread-safe queue for local AI inference, while the other branch encodes the feed into an H.264 stream for low-latency UDP transmission to the GCS.
-    \item YOLO Inference Consumer Thread: Constantly dequeues the latest camera frames, applies normalization, and executes the ONNX-optimized YOLOv8n model using the ONNX Runtime engine. Upon detecting a human target, it applies Non-Maximum Suppression (NMS) and reports the highest-confidence bounding box coordinate data back to the MAVSDK thread via shared memory variables protected by threading locks.
+    \item Main Execution Thread: Manages the Flask REST and SocketIO server for two-way WebSocket communication with the ground station.
+    \item MAVSDK Telemetry Listener Thread: Operates asynchronously to manage flight telemetry and drive the FSM cycle at a strict 20 Hz loop.
+    \item GStreamer Video Source Producer Thread: Captures frames via \texttt{v4l2src} and utilizes a tee-branch pipeline: one branch encodes H.264 video for low-latency UDP GCS transmission, while the second branch pushes raw RGB frames into a thread-safe leaky Frame Queue.
+    \item YOLO Inference Consumer Thread: Dequeues frames, executes ONNX Runtime inference, and evaluates candidate target scores.
 \end{itemize}
+The complete data flow follows the Visual-to-Control Pipeline illustrated in Figure~\ref{fig:visual_control_pipeline}. Raw camera frames acquired via GStreamer are distributed by a tee branch into a thread-safe leaky Frame Queue. Frames are then evaluated by the ONNX Runtime engine, generating velocity vector setpoints transmitted via MAVSDK-Python to the Pixhawk 6C flight controller.
 
-\subsection{Proportional Navigation Control Loop}
-To translate conceptual logic into flight maneuvers, a proportional navigation algorithm was implemented. The system periodically calculates the pixel alignment error between the target's bounding box center and the camera frame's geometric center. Because raw bounding box coordinates contain noise from wind and drone vibrations, an Exponential Moving Average (EMA) filter is applied:
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/fig_visual_control_pipeline.pdf}
+    \caption{Visual-to-Control Pipeline data flow mapping raw optical inputs to autonomous flight velocity setpoints.}
+    \label{fig:visual_control_pipeline}
+\end{figure}
+
+\subsection{Proportional Navigation Control Loop and Target Lock Hysteresis}
+To translate conceptual logic into flight maneuvers, a proportional navigation algorithm was implemented. The system periodically calculates the pixel alignment error between the target's bounding box center and the camera frame's geometric center. Because raw bounding box coordinates contain noise from wind and drone vibrations, an Adaptive Exponential Moving Average (EMA) filter is applied:
 \begin{equation}
 S_t = \alpha \cdot x_t + (1 - \alpha) \cdot S_{t-1}
 \end{equation}
-The smoothing factor $\alpha$ is set to 0.30. This filters the input error impulses $x_t$ using the previous smoothed value $S_{t-1}$. The filtered alignment error is then mapped into physical setpoints. 
+The smoothing factor $\alpha$ is set adaptively: $\alpha = 0.20$ when the target is distant (Bounding Box Area ratio $\leq 0.20$), increasing to $\alpha = 0.30$ as the target approaches (Bounding Box Area ratio $> 0.20$).
 
-For lateral alignment, the yaw rate $\omega_z$ (degrees per second) is defined linearly based on the horizontal pixel offset error ($err_x$) and a designated proportional gain ($K_p$):
+To evaluate candidate target detections and prevent erratic target switching (\textit{target ping-ponging}) when multiple human subjects appear in the camera's FOV, a linear weighted scoring formula is evaluated:
+\begin{equation}
+\text{Score} = 0.45 \cdot A_{\text{box}} + 0.25 \cdot C_{\text{score}} + 0.20 \cdot D_{\text{center}} + 0.10 \cdot H_{\text{track}}
+\end{equation}
+where $A_{\text{box}}$ is the normalized bounding box area ratio (proximity metric), $C_{\text{score}}$ is the YOLO confidence score, $D_{\text{center}} = 1 - \frac{|err_x|}{w_{\text{frame}}/2}$ is the horizontal centering metric, and $H_{\text{track}}$ is the spatial tracking history weight. Furthermore, a target lock hysteresis threshold requires any newly detected target score to exceed the currently locked target score by at least 35\% ($\Delta \text{Score} \geq 0.35$) before switching focus.
+
+For lateral alignment, the yaw rate $\omega_z$ (deg/s) is defined linearly based on the horizontal pixel offset error ($err_x$) and gain $K_p$:
 \begin{equation}
 \omega_z = K_p \cdot err_x 
 \end{equation}
-Simultaneously, the forward approach velocity $v_x$ (meters per second) is regulated by evaluating the bounding box fill ratio $A_{box}$ against the optimal full-screen documentation ratio $A_{opt}$. A damping coefficient $\gamma$ limits the maximum forward pitch acceleration to prevent overshoot during approach maneuvers:
+Simultaneously, the forward approach velocity $v_x$ (m/s) is regulated by evaluating $A_{\text{box}}$ against optimal documentation threshold $A_{\text{opt}}$ with damping coefficient $\gamma$:
 \begin{equation}
 v_x = \gamma \cdot \left( A_{opt} - A_{box} \right)
 \end{equation}
-These mathematical variables are combined to output a continuous velocity vector command for the drone via MAVSDK's \texttt{VelocityNedYaw} method. This continuous stream of coordinate instructions operates purely in the OFFBOARD flight mode, overriding manual pilot RC signals until the autonomous mission dictates a mode switch or an emergency override trigger is physically pulled by the operator.
+These mathematical variables combine to output velocity setpoints via MAVSDK-Python's \texttt{VelocityNedYaw} method operating in OFFBOARD flight mode.
 
 \section{Implementation}
 
 \subsection{Three-Layer Failsafe Safety Architecture}
-To mitigate the risk of sensor anomalies—specifically barometric altitude drifting common in tropical environments—a Three-Layer Failsafe Safety System was integrated into the autonomous core:
+To mitigate barometric altitude drift common in tropical field environments, a three-layer failsafe safety system is integrated directly into the autonomous flight core:
 \begin{enumerate}
     \item Altitude Floor Clamping: The minimum safe altitude is strictly constrained to 1.2 meters, preventing any autonomous command from forcing the drone to descend into the ground or jungle canopy.
     \item Runtime Setpoint Rejection: At a 20 Hz loop rate, if the navigation algorithm outputs a target descent velocity (\texttt{target\_alt}) that breaches the 1.2-meter limit, the command is instantly rejected and replaced with a zero-velocity vector, forcing the drone into a static hover.
-    \item Pre-RTL Safety Climb: When the battery reaches critical levels ($\leq 15\%$), the built-in PX4 Return-to-Launch (RTL) mode is triggered. However, the companion computer intercepts this action, stripping the current observation task and forcefully commanding a 3.0 to 5.0-second vertical climb at $v_z = -0.8$ m/s. This provides an additional 1.6m - 2.4m of elevation clearance before relinquishing control to the Pixhawk for horizontal RTL navigation, ensuring the drone clears any obstacles that might be taller than estimated due to negative barometer drift.
+    \item Pre-RTL Safety Climb: When PX4 detects a critical low battery threshold, it defaults to a straight Return-to-Launch trajectory. However, the companion computer intercepts this event and commands an immediate Pre-RTL Safety Climb vector (-0.8 m/s vertical velocity for 3.0 seconds). This vertical climb gains obstacle clearance before PX4 assumes final RTL control.
 \end{enumerate}
 
-Additionally, an overarching heartbeat monitor guarantees that if the MAVSDK \texttt{HEARTBEAT} transmission fails to arrive at the Pixhawk within a 500 ms timeout threshold—due to a Raspberry Pi software crash or serial cable disconnection—the Pixhawk will autonomously drop out of OFFBOARD mode and trigger a fallback HOLD or RTL state. This guarantees the vehicle is never left flying blindly without algorithmic supervision.
+Additionally, an overarching heartbeat monitor ensures that if the MAVSDK-Python \texttt{HEARTBEAT} transmission fails to arrive at the Pixhawk within a 500 ms timeout threshold—due to a Raspberry Pi software crash or serial cable disconnection—the Pixhawk will autonomously drop out of OFFBOARD mode and trigger a fallback HOLD or RTL state. This ensures the vehicle is never left flying blindly without algorithmic supervision.
 
-\subsection{GCS Operational Interface Software Layer}
-The monitoring interface for the Ground Control Station (GCS) is built using React 19. A two-way WebSocket communication channel (Socket.IO) handles real-time telemetry and YOLO detection bounding boxes at 5 Hz. This data overlays a low-latency H.264 GStreamer video feed transmitted via UDP, providing the operator with a comprehensive Heads-Up Display (HUD). Furthermore, a manual override is configured via the Skydroid T10 remote controller. Toggling the designated RC switch immediately terminates the OFFBOARD control loop, reverting the drone to manual Position Control (POSCTL) mode.
+\subsection{GCS Telemetry Pipeline and Operational Interface}
+The Ground Control Station (GCS) interface operates via the Telemetry-to-Frontend Pipeline illustrated in Figure~\ref{fig:telemetry_pipeline}. High-frequency MAVLink telemetry is continuously captured from the Pixhawk 6C by the MAVSDK-Python listener at 20 Hz, cached in shared state memory, formatted by the Flask backend, and broadcast via SocketIO at 5 Hz to update the React 19 GCS operator HUD overlay. A Skydroid T10 remote controller provides a manual hardware override, immediately terminating OFFBOARD mode upon switch activation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.98\linewidth]{figures/fig_telemetry_pipeline.pdf}
+    \caption{Telemetry-to-Frontend Pipeline data flow mapping Pixhawk 6C sensor metrics to the React GCS dashboard.}
+    \label{fig:telemetry_pipeline}
+\end{figure}
 
 \section{Experimental Results}
-The system was evaluated through empirical testing of both static components and in-flight operations over five flight sessions. Tests assessed power stability, algorithm accuracy, end-to-end latency, and autonomous navigation reliability.
+The system was evaluated through empirical testing across 5 in-flight testing sessions conducted at UNY Field. The flight test matrix recorded 38 total approach triggers, 30 successful target documentations, and 8 target loss instances caused by rapid out-of-FOV movements. Tests assessed power stability, algorithm accuracy, end-to-end latency, and navigation reliability.
 
 \subsection{System Power Integrity and OS Optimization}
-Testing the power architecture on the Raspberry Pi 5 revealed that conventional Mini UPS modules or standard buck converters (e.g., XL4015E1) failed under the high computational load, causing PMIC damage or \textit{under-voltage} warnings leading to system reboots. The final integration of a 5A UBEC directly connected to the main LiPo battery successfully provided a stable 5.1V DC supply, entirely eliminating \textit{brownout} incidents even during peak inference loads.
+Testing the power architecture on the Raspberry Pi 5 showed that conventional Mini UPS modules or standard buck converters (e.g., XL4015E1) failed under peak computational loads. These failures caused PMIC damage or \textit{under-voltage} warnings that triggered system reboots. The final integration of a 5A UBEC directly connected to the main LiPo battery successfully provided a stable 5.1V DC supply, eliminating \textit{brownout} incidents even during peak inference loads.
 
 Additionally, executing the system on a headless Linux OS (without a GUI) reduced idle RAM consumption from $\sim$1,200 MB to $\sim$420 MB. This optimization prevented frame dropping and latency spikes, enabling a stable processing pipeline.
 
 \subsection{Detection Algorithm Architecture Evaluation}
-An empirical comparison was conducted between the baseline YOLOv8n model and its pose-estimation variant (YOLOv8n-pose). While the pose-estimation model successfully identified skeletal keypoints, it exhibited severe bounding box flickering under varying outdoor illumination and was highly susceptible to motion blur caused by the drone's maneuvers. Consequently, the baseline YOLOv8n bounding box detector was selected for its robustness and consistent accuracy during flight.
+An empirical evaluation was conducted comparing the baseline YOLOv8n model against its pose-estimation variant (YOLOv8n-pose). While the pose model identified skeletal keypoints, it exhibited bounding box flickering under varying outdoor illumination and motion blur during dynamic maneuvers. Consequently, the baseline YOLOv8n detector was selected for its robustness and consistent target accuracy during flight.
 
 Further optimization focused on determining the optimal ONNX tensor input resolution. The computational benchmarking on the Raspberry Pi 5 measured the impact of three different tensor dimensions on the ONNX Runtime engine. As detailed in Table \ref{tab:model_comparison}, a 640x640 resolution resulted in an unacceptable latency of 171.22 ms (5.84 FPS), posing a severe risk to the real-time closed-loop control architecture. Conversely, a 256x256 resolution yielded 35.54 FPS but suffered from significant precision loss at distances exceeding 10 meters. Ultimately, the 320x320 resolution provided an optimal balance, reducing inference latency to 42.17 ms ($\sim$23.72 FPS) while maintaining sufficient accuracy for target detection.
 
@@ -198,13 +228,14 @@ Further optimization focused on determining the optimal ONNX tensor input resolu
     \centering
     \caption{Benchmarking of YOLOv8n ONNX Input Resolutions on Raspberry Pi 5}
     \label{tab:model_comparison}
-    \begin{tabular}{ccccc}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{@{}ccccc@{}}
         \toprule
         \textbf{Model Variant} & \textbf{Input Size} & \textbf{Output Tensor} & \textbf{Avg FPS} & \textbf{Latency (ms)} \\
         \midrule
-        256n & 256x256 px & [1, 300, 6] & $\sim$ 35.54 & $\sim$ 28.13 \\
-        \textbf{320n} & \textbf{320x320 px} & \textbf{[1, 300, 6]} & \textbf{$\sim$ 23.72} & \textbf{$\sim$ 42.17} \\
-        640n & 640x640 px & [1, 300, 6] & $\sim$ 5.84  & $\sim$ 171.22 \\
+        256n & 256x256 px & [1, 84, 1344] & $\sim$ 35.54 & $\sim$ 28.13 \\
+        \textbf{320n} & \textbf{320x320 px} & \textbf{[1, 84, 2100]} & \textbf{$\sim$ 23.72} & \textbf{$\sim$ 42.17} \\
+        640n & 640x640 px & [1, 84, 8400] & $\sim$ 5.84  & $\sim$ 171.22 \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -214,8 +245,8 @@ The selected YOLOv8n model was fine-tuned over 50 epochs using a filtered COCO20
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.85\linewidth]{fig_training_results.png}
-    \caption{Training metrics progression for the YOLOv8n model over 50 epochs.}
+    \includegraphics[width=0.85\linewidth]{figures/fig_training_results.png}
+    \caption{Training and validation metric progression for the fine-tuned YOLOv8n model over 50 epochs.}
     \label{fig:training_loss_curves}
 \end{figure}
 
@@ -223,7 +254,7 @@ The selected YOLOv8n model was fine-tuned over 50 epochs using a filtered COCO20
     \centering
     \caption{Evaluation Metrics for the Fine-Tuned YOLOv8n Model}
     \label{tab:training_metrics_akhir}
-    \begin{tabular}{p{6.5cm}p{1.5cm}}
+    \begin{tabular}{@{}p{5.5cm}r@{}}
         \toprule
         \textbf{Metric} & \textbf{Value} \\
         \midrule
@@ -241,112 +272,113 @@ The Persistent Multi-Target Scouting FSM was validated across 38 approaching man
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.7\linewidth]{fig_fsm_berjalan.png}
-    \caption{In-flight operational log of the Finite State Machine transitions during the Scout Mission.}
+    \includegraphics[width=0.85\linewidth]{figures/fig_fsm_berjalan.png}
+    \caption{In-flight execution of the FSM Scout Mission showing active target detection during the APPROACH state.}
     \label{fig:fsm_in_flight}
 \end{figure}
 
 
 
 \subsection{In-Flight Visual Catch Distance Accuracy Test}
-The endurance and tracking performance of the object detection algorithm were evaluated during stable hovering conditions at altitudes between 1 and 2 meters (AGL). A test subject moved linearly away from the drone, increasing distance from 5 to 20 meters. Detection accuracy and bounding box stability were measured against the distance threshold. At ranges $\leq 15$ meters, the system maintained a 100\% detection success rate with consistent bounding box area ratios. However, as the distance approached 20 meters, the target resolution on the 320x320 input grid became insufficient, resulting in increased tracking uncertainty and detection failures. The detection rate dropped to 45.5\% at the 20-meter mark, identifying this distance as the functional limit of the current optical configuration.
+The endurance and tracking performance of the object detection algorithm were evaluated during stable hovering conditions at altitudes between 1 and 2 meters (AGL --- Above Ground Level). A test subject moved linearly away from the drone, increasing distance from 5 to 20 meters. Detection accuracy and bounding box stability were measured against the distance threshold. At ranges $\leq 15$ meters, the system maintained a 100\% detection success rate with consistent Bounding Box Area ratios. However, as the distance approached 20 meters, the target resolution on the 320x320 input grid became insufficient, resulting in increased tracking uncertainty and detection failures. The detection rate dropped to 45.5\% at the 20-meter mark, identifying this distance as the functional limit of the current optical configuration.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_deteksi5m.png}
-        \caption{Stable detection at 5 meters with 100\% reliability.}
+        \includegraphics[width=\textwidth]{figures/fig_deteksi5m.png}
+        \caption{Target detection at 5 m.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_deteksi20m.png}
-        \caption{Degraded detection at 20 meters (45.5\% reliability).}
+        \includegraphics[width=\textwidth]{figures/fig_deteksi20m.png}
+        \caption{Target detection at 20 m.}
     \end{subfigure}
-    \caption{Comparison of in-flight visual tracking capability at varying distances, illustrating the resolution limitations of the 320x320 input grid at extended ranges.}
+    \caption{In-flight visual target detection performance at 5 m and 20 m operating distances.}
     \label{fig:in_flight_detection}
 \end{figure}
 
 \subsection{End-to-End Latency and Navigation Accuracy}
-Latency tests across 2,096 samples over five flight sessions measured the total time from frame extraction to the delivery of a flight speed setpoint to the Pixhawk. The overall average latency was 188.04 ms. The median (P50) latency was 164.65 ms, and the 95th percentile (P95) was 208.27 ms. This ensures the multi-threaded architecture can supply control feedback faster than a 5 Hz rate, meeting the stringent requirements for real-time mission execution without destabilizing the drone's aerodynamic stance. The detailed breakdown of the computational stages contributing to the total end-to-end latency is presented in Table \ref{tab:latency_breakdown}.
+Latency tests across 2,096 samples over five flight sessions measured the total time from frame capture to the delivery of a velocity setpoint to the Pixhawk. The overall average end-to-end latency was 188.04 ms. The median (P50) latency was 164.65 ms, the 90th percentile (P90) was 192.30 ms, and the 95th percentile (P95) was 208.27 ms. Majority of processing cycles remain below 210 ms, meeting the requirements for real-time mission execution without destabilizing the drone. The detailed breakdown of the pipeline stages contributing to the total end-to-end latency is presented in Table \ref{tab:latency_breakdown}.
 
 \begin{table}[ht]
     \centering
-    \caption{End-to-End Pipeline Latency Breakdown}
+    \caption{End-to-End Pipeline Latency Breakdown (2,096 samples)}
     \label{tab:latency_breakdown}
-    \begin{tabular}{p{5cm}c}
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}p{3.0cm}cccc@{}}
         \toprule
-        \textbf{Computational Pipeline Stage} & \textbf{Average Duration (ms)} \\
+        \textbf{Pipeline Stage} & \textbf{Avg (ms)} & \textbf{Min (ms)} & \textbf{Max (ms)} & \textbf{Std Dev} \\
         \midrule
-        USB Camera Frame Capture (GStreamer) & 41.87 \\
-        OpenCV Frame Conversion \& Resize & 22.15 \\
-        YOLOv8n ONNX Tensor Inference & 59.08 \\
-        Non-Maximum Suppression (NMS) & 15.42 \\
-        Proportional Navigation Calculation & 8.35 \\
-        MAVLink Serialization \& UART Transfer & 41.17 \\
+        Capture $\rightarrow$ Frame Queue & 41.87 & 0.5 & 57.4 & 21.45 \\
+        Frame Queue $\rightarrow$ YOLO Start & 0.00 & 0.0 & 0.0 & 0.00 \\
+        YOLO Inference (ONNX) & 59.08 & 49.9 & 76.8 & 4.42 \\
+        Detection $\rightarrow$ Cmd Generation & 73.34 & 1.2 & 1380.1 & 164.71 \\
         \midrule
-        \textbf{Total End-to-End Latency} & \textbf{188.04 ms} \\
+        \textbf{Total End-to-End} & \textbf{188.04} & \textbf{53.0} & \textbf{1602.2} & \textbf{185.10} \\
         \bottomrule
     \end{tabular}
 \end{table}
 
-Navigation accuracy was assessed via the horizontal alignment error during 30 documentation phases. The system achieved a bounding box fill ratio of 0.389 and an average alignment error of 0.049. A 2.0-meter displacement shift demonstrated minimal deviation (averaging 4.52\% error from the GPS destination), confirming precise setpoint synchronization between the Pixhawk EKF2 estimator and the companion computer.
+Navigation accuracy was assessed via the horizontal alignment error during 30 documentation phases. The system achieved an average Bounding Box Area ratio of 0.389 and an average horizontal alignment error (\texttt{err\_x}) of 0.049 at the moment of documentation trigger. A 2.0-meter lateral displacement maneuver across 29 trials demonstrated minimal deviation, averaging 4.52\% error from the GPS destination, confirming precise setpoint synchronization between the Pixhawk EKF2 (Extended Kalman Filter 2) estimator and the companion computer.
 
 \subsection{Failsafe Safety and Persistent Scouting}
-The three-layer failsafe architecture effectively neutralized barometric altitude drift anomalies. During battery depletion tests (at 13-14\% capacity), the drone successfully executed the Pre-RTL Safety Climb for 3.0 seconds, gaining 1.6m - 2.4m of elevation before initiating the horizontal RTL maneuver (Figure \ref{fig:battery_rtl}). The manual RC Override switch successfully terminated the autonomy script in all test cases.
+\label{sec:results_failsafe}
+The three-layer failsafe architecture effectively neutralized barometric altitude drift anomalies. During battery depletion tests (Battery RTL triggered at 13--14\% capacity), the drone successfully executed the Pre-RTL Safety Climb maneuver, achieving actual altitude gains ranging from 0.46 to 2.27 meters before initiating the horizontal RTL maneuver (Figure \ref{fig:battery_rtl}). The manual RC Override switch successfully terminated the autonomy script in all test cases.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\linewidth]{fig_battery_rtl.png}
-    \caption{Trigger activation of the RTL battery defense system.}
+    \includegraphics[width=0.8\linewidth]{figures/fig_battery_rtl.png}
+    \caption{Flight log recording Battery RTL activation and execution of the Pre-RTL Safety Climb maneuver.}
     \label{fig:battery_rtl}
 \end{figure}
 
-The Persistent Scouting logic documented 11 distinct targets across three flights. Utilizing the Haversine formula with a 3-meter exclusion radius, the system successfully bypassed 19 duplicate detections without triggering RTL, proving the drone's capability to continue area observation efficiently. The average tracking cycle duration was 51-56 seconds per subject. During these intensive operations, the Raspberry Pi 5 maintained an average CPU utilization of 144\% (multi-core) and RAM usage of 600 MB. Zero incidences of thermal throttling were observed, validating the headless OS and passive cooling design.
+The Persistent Scouting logic documented 11 distinct targets across five flight sessions. Utilizing the Haversine formula with a 3-meter exclusion radius, the system successfully bypassed 19 duplicate detections without triggering RTL, proving the drone's capability to continue area observation efficiently. The average tracking cycle duration was approximately 51--57 seconds per subject. During these intensive operations, the Raspberry Pi 5 maintained an average CPU utilization of 144.06\% (multi-core) with a peak of 177\%, and average RAM usage of approximately 600 MB (reducing idle footprint from $\sim$1,200 MB down to $\sim$420 MB via the headless Linux OS). Zero incidences of thermal throttling were observed, validating the headless OS and passive cooling design. Representative documented targets from these scouting sessions are shown in Figure~\ref{fig:persistent_scouting_proof}, and the corresponding GCS operator monitoring dashboard is shown in Figure~\ref{fig:dashboard_interface}.
 
 \begin{figure}[ht]
     \centering
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_scout_a.jpg}
-        \caption{Target A Documented}
+        \includegraphics[width=\textwidth]{figures/fig_scout_morning.jpg}
+        \caption{Target documented under morning light.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_scout_b.jpg}
-        \caption{Target B Documented}
+        \includegraphics[width=\textwidth]{figures/fig_scout_day.jpg}
+        \caption{Target documented under daytime light.}
     \end{subfigure}
     \vskip\baselineskip
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_scout_c.jpg}
-        \caption{Target C Documented}
+        \includegraphics[width=\textwidth]{figures/fig_scout_dusk.jpg}
+        \caption{Target documented under dusk light.}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\linewidth}
-        \includegraphics[width=\textwidth]{fig_scout_d.jpg}
-        \caption{Target D Documented}
+        \includegraphics[width=\textwidth]{figures/fig_scout_night.jpg}
+        \caption{Target documented under night lighting.}
     \end{subfigure}
-    \caption{Visual proof of the Persistent Scouting scenario, demonstrating the drone's capability to continuously navigate and document multiple distinct targets within a single flight session without returning to launch.}
+    \caption{Target documentation outputs captured during Persistent Multi-Target Scouting missions across varying field lighting conditions.}
     \label{fig:persistent_scouting_proof}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
-    \includegraphics[width=0.8\linewidth]{fig_dashboard.png}
-    \caption{Web interface of the real-time operator monitoring dashboard receiving 5 Hz WebSockets along with low latency UDP video captures.}
+    \includegraphics[width=0.95\linewidth]{figures/fig_dashboard.png}
+    \caption{Real-time Ground Control Station (GCS) dashboard displaying flight telemetry, Scout Mission status, and system monitoring information.}
     \label{fig:dashboard_interface}
 \end{figure}
 
 \section{Discussion}
-While the developed system demonstrates robust autonomous SAR capabilities, several critical hardware and software trade-offs must be acknowledged:
+While the developed system demonstrated reliable autonomous SAR capabilities under the tested conditions, several critical hardware and software trade-offs must be acknowledged:
 \begin{itemize}
-    \item Model Resolution Trade-offs: Scaling down the YOLOv8n tensor to 320x320 pixels significantly improved inference latency, achieving 23 FPS on edge hardware. The reduction in matrix operations prevents memory bottlenecks on the Raspberry Pi 5. However, this resolution compromises long-range detection. The convolution filters lack sufficient pixel density to extract human contours beyond 15 meters, severely degrading tracking accuracy and forcing the drone to conduct scouting missions at closer, potentially riskier proximities to the terrain.
-    \item Model Architecture Limitations: The baseline YOLOv8n bounding box detector was chosen over YOLOv8n-pose due to lower computational overhead and greater resistance to motion blur. While skeletal keypoint data could theoretically improve posture analysis for injured victims (e.g., detecting individuals lying down versus standing), the pose model proved too unstable for reliable dynamic targeting given the hardware constraints. The flickering of skeletal joints caused erratic proportional navigation feedback, rendering the flight path unstable.
-    \item Camera Constraints: The reliance on a single fixed monocular RGB camera restricts operational capability. Without an active mechanical gimbal, pitch and roll corrections during flight momentarily disrupt the target alignment coordinate geometry. Every time the drone pitches forward to move, the camera tilts down, displacing the bounding box artificially. Furthermore, the standard optical system is incapable of operating in low-light or night-time conditions, which are often critical periods during SAR deployment when victims need immediate thermal discovery.
-    \item Duplicate Exclusion Logistics: The GPS-based Haversine exclusion algorithm successfully prevents infinite loops on a single target by creating a 3-meter geospatial blackout radius. However, it lacks visual Person Re-Identification (Re-ID). Consequently, if multiple distinct victims are clustered within the same 3-meter radius—a common scenario in disaster evacuation points—the system may erroneously classify them as a single entity, ignoring the others. Future iterations must integrate algorithms like DeepSORT or OSNet to differentiate subjects based on visual clothing features rather than just coordinates.
-    \item Deployment Communication: The system's video telemetry relies on a 4G/5G mobile router. In remote disaster zones with degraded or completely destroyed cellular infrastructure, the GCS video feed may suffer severe stuttering, packet loss, or complete failure. However, the true advantage of the edge computing architecture is that it guarantees the drone's autonomous search capability remains entirely unaffected by such signal loss. Even if the operator's screen goes black, the Raspberry Pi 5 will continue to execute the FSM, navigate the drone, and save victim documentation internally for post-flight retrieval.
+    \item \textbf{Model Resolution Trade-offs}: Scaling down the YOLOv8n tensor to 320x320 pixels significantly improved inference latency, achieving approximately 23 FPS on edge hardware. Detection rates remained stable at 100\% up to 15 meters, but dropped to 45.5\% at 20 meters as the Bounding Box Area on the 320x320 input grid became insufficient. This forces the drone to conduct scouting missions at closer proximities.
+    \item \textbf{Model Architecture Constraints}: The baseline YOLOv8n bounding box detector was chosen over YOLOv8n-pose due to lower computational overhead and greater resistance to motion blur. While skeletal keypoint data could theoretically improve posture analysis, the pose model proved unstable under varying outdoor illumination and camera perspective shifts during dynamic drone maneuvers, causing erratic navigation feedback.
+    \item \textbf{Environmental and Lighting Limitations}: Detection performance is significantly affected by ambient illumination. Empirical testing under four lighting conditions confirmed 100\% detection under daylight, but detection rates dropped below 30\% during dawn and dusk due to dynamic range limitations of the monocular RGB camera sensor. In complete darkness without artificial light, detection performance dropped to 0\%.
+    \item \textbf{Camera Gimbal Constraints}: The reliance on a single fixed monocular RGB camera restricts operational capability. Without an active mechanical gimbal, pitch and roll corrections during flight momentum temporarily disrupt the target alignment coordinate geometry. Furthermore, standard optical sensors cannot operate in low-light or night-time conditions.
+    \item \textbf{Duplicate Exclusion Logistics}: The Haversine exclusion algorithm successfully prevents re-documenting targets within a 3-meter geospatial exclusion radius. However, it lacks visual Person Re-Identification (Re-ID). If distinct victims are clustered within a 3-meter radius, the system classifies them as a single entity. Future iterations will integrate visual Re-ID algorithms to differentiate subjects based on visual features rather than coordinates alone.
+    \item \textbf{Deployment Communication Links}: System video telemetry relies on a 4G/5G mobile router. When line-of-sight is obstructed by structures, the GCS video feed suffers stuttering. However, flight log analysis confirmed that autonomous onboard execution (FSM, navigation, and documentation) remained completely unaffected by signal degradation.
 \end{itemize}
 
 \section{Conclusion}
-The integration of a Holybro S500 drone with a Pixhawk 6C and a Raspberry Pi 5 provides a highly effective prototype for autonomous Search and Rescue operations. Utilizing a headless OS, a 5A UBEC power supply, and an ONNX-quantized YOLOv8n model, the system executes real-time multi-threaded edge computing with an end-to-end latency below 200 ms. The Persistent Multi-Target Scouting state machine allows the drone to discover and document multiple victims continuously without repetitive RTL maneuvers. The Three-Layer Safety architecture, notably the Pre-RTL Safety Climb, effectively safeguards the vehicle against barometric drift. Future enhancements should incorporate infrared or thermal imaging payloads for night operations, along with visual re-identification models to improve target clustering accuracy.
+This work demonstrates an autonomous SAR UAV framework integrating an on-board Raspberry Pi 5 companion computer and Pixhawk 6C flight controller. The implemented system maintains a strict 20 Hz control loop with an average end-to-end latency of 188.04 ms (P95 of 208.27 ms) by utilizing headless OS execution, ONNX Runtime inference, and a $320 \times 320$ pixel tensor resolution. Field evaluations confirm that the Scout Mission state machine, supported by a 3-meter Haversine exclusion radius, enables persistent multi-target discovery without requiring mid-mission landings. The three-layer safety architecture, notably the Pre-RTL Safety Climb, provided 0.46--2.27 meters of vertical clearance before PX4 RTL takeover. Target detection remained stable at 100\% up to 15 meters, but dropped to 45.5\% at 20 meters due to bounding box area reduction on the low-resolution grid. Future work will integrate infrared imaging for nocturnal operations, dedicated hardware neural accelerators, dynamic camera tilt mechanisms, and visual Person Re-Identification (Re-ID) algorithms to enhance spatial duplicate exclusion.
 
 \begin{thebibliography}{00}
 \bibitem{b1} M. Lyu, Y. Zhao, C. Huang, and H. Huang, ``Unmanned aerial vehicles for search and rescue: A survey,'' \textit{Remote Sensing}, vol. 15, no. 13, p. 3266, 2023.
