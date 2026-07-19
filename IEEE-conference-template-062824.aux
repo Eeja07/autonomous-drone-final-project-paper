@@ -1,0 +1,90 @@
+\relax 
+\citation{b1}
+\citation{b8}
+\citation{b3}
+\citation{b4}
+\citation{b5}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}Related Work}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Autonomous Search and Rescue Drone architectures}{1}{}\protected@file@percent }
+\citation{b6}
+\citation{b7}
+\citation{b16}
+\citation{b11}
+\citation{b12,b13}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Real-Time Human Detection and Navigation for SAR}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Target Detection, Tracking, and Avoidance System for UAVs}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}System Design and Architecture}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Theoretical Background of Autonomous Systems and Edge Computing}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Design of the Autonomous Operation Cycle (Scout Mission)}{2}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Overall System Architecture Topology showing interactions between the Pixhawk 6C (PX4 firmware), Raspberry Pi 5 companion computer, and Ground Control Station (GCS) operator interface.\relax }}{3}{}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:system_arch_full}{{1}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Hardware and Electrical Topology}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Mechanical Component Integration}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Distributed Multithreading Edge Software Architecture}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces State Machine Diagram of the autonomous Scout Mission system, showing state transitions (SCAN, APPROACH, DOCUMENT, DISPLACING) and Target Lost Failback logic.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:state_machine_fsm}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-F}}Proportional Navigation Control Loop and Target Lock Hysteresis}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Block diagram of the single battery (parallel) electrical load distribution architecture utilizing a 5A UBEC step-down module.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:electrical_design}{{3}{4}}
+\newlabel{fig:cad_assembly}{{4a}{4}}
+\newlabel{sub@fig:cad_assembly}{{a}{4}}
+\newlabel{fig:real_prototype}{{4b}{4}}
+\newlabel{sub@fig:real_prototype}{{b}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Final UAV mechanical design and realized prototype.\relax }}{4}{}\protected@file@percent }
+\newlabel{fig:drone_assembly_real}{{4}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Visual-to-Control Pipeline data flow mapping raw optical inputs to autonomous flight velocity setpoints.\relax }}{5}{}\protected@file@percent }
+\newlabel{fig:visual_control_pipeline}{{5}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Implementation}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Three-Layer Failsafe Safety Architecture}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}GCS Telemetry Pipeline and Operational Interface}{5}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Telemetry-to-Frontend Pipeline data flow mapping Pixhawk 6C sensor metrics to the React GCS dashboard.\relax }}{5}{}\protected@file@percent }
+\newlabel{fig:telemetry_pipeline}{{6}{5}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Results}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}System Power Integrity and OS Optimization}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Detection Algorithm Architecture Evaluation}{5}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Benchmarking of YOLOv8n ONNX Input Resolutions on Raspberry Pi 5\relax }}{6}{}\protected@file@percent }
+\newlabel{tab:model_comparison}{{I}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}YOLOv8n Transfer Learning and Fine-Tuning}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Training and validation metric progression for the fine-tuned YOLOv8n model over 50 epochs.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:training_loss_curves}{{7}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Evaluation Metrics for the Fine-Tuned YOLOv8n Model\relax }}{6}{}\protected@file@percent }
+\newlabel{tab:training_metrics_akhir}{{II}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Autonomous Flight Testing: FSM Scout Mission}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces In-flight execution of the FSM Scout Mission showing active target detection during the APPROACH state.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:fsm_in_flight}{{8}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}In-Flight Visual Catch Distance Accuracy Test}{6}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces In-flight visual target detection performance at 5 m and 20 m operating distances.\relax }}{6}{}\protected@file@percent }
+\newlabel{fig:in_flight_detection}{{9}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}End-to-End Latency and Navigation Accuracy}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces End-to-End Pipeline Latency Breakdown (2,096 samples)\relax }}{7}{}\protected@file@percent }
+\newlabel{tab:latency_breakdown}{{III}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Failsafe Safety and Persistent Scouting}{7}{}\protected@file@percent }
+\newlabel{sec:results_failsafe}{{\mbox  {V-G}}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Flight log recording Battery RTL activation and execution of the Pre-RTL Safety Climb maneuver.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:battery_rtl}{{10}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Target documentation outputs captured during Persistent Multi-Target Scouting missions across varying field lighting conditions.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:persistent_scouting_proof}{{11}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Real-time Ground Control Station (GCS) dashboard displaying flight telemetry, Scout Mission status, and system monitoring information.\relax }}{7}{}\protected@file@percent }
+\newlabel{fig:dashboard_interface}{{12}{7}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{7}{}\protected@file@percent }
+\bibcite{b1}{1}
+\bibcite{b2}{2}
+\bibcite{b3}{3}
+\bibcite{b4}{4}
+\bibcite{b5}{5}
+\bibcite{b6}{6}
+\bibcite{b7}{7}
+\bibcite{b8}{8}
+\bibcite{b9}{9}
+\bibcite{b10}{10}
+\bibcite{b11}{11}
+\bibcite{b12}{12}
+\bibcite{b13}{13}
+\bibcite{b14}{14}
+\bibcite{b15}{15}
+\bibcite{b16}{16}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{8}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{8}{}\protected@file@percent }
+\gdef \@abspage@last{8}
